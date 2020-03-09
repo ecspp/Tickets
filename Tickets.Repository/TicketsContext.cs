@@ -49,19 +49,24 @@ namespace Tickets.Repository
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var AddedEntities = ChangeTracker.Entries().Where(E => E.State == EntityState.Added && E.Entity is BaseEntity).ToList();
+            var AddedEntities = ChangeTracker
+                    .Entries()
+                    .Where(E => E.State == EntityState.Added && E.Entity is BaseEntity)
+                    .ToList();
 
             AddedEntities.ForEach(E =>
-            {
-                E.Property("CreatedAt").CurrentValue = DateTime.Now;
-            });
+                {
+                    E.Property("CreatedAt").CurrentValue = DateTime.Now;
+                }
+            );
 
             var EditedEntities = ChangeTracker.Entries().Where(E => E.State == EntityState.Modified && E.Entity is BaseEntity).ToList();
 
             EditedEntities.ForEach(E =>
-            {
-                E.Property("UpdatedAt").CurrentValue = DateTime.Now;
-            });
+                {
+                    E.Property("UpdatedAt").CurrentValue = DateTime.Now;
+                }
+            );
 
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
