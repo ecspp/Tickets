@@ -66,10 +66,10 @@ namespace Tickets.WebAPI.Controllers
                     return BadRequest();
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 

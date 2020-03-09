@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tickets.Repository;
@@ -9,9 +10,10 @@ using Tickets.Repository;
 namespace Tickets.Repository.Migrations
 {
     [DbContext(typeof(TicketsContext))]
-    partial class TicketsContextModelSnapshot : ModelSnapshot
+    [Migration("20200309153110_CreateDateForCompany")]
+    partial class CreateDateForCompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

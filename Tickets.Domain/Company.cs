@@ -3,7 +3,7 @@ using Tickets.Domain.Identity;
 
 namespace Tickets.Domain
 {
-    public class Company
+    public class Company : BaseEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
