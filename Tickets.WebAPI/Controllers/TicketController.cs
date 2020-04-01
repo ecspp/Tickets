@@ -42,21 +42,5 @@ namespace Tickets.WebAPI.Controllers
             }
             return this.StatusCode(StatusCodes.Status500InternalServerError, $"Não foi possível criar o novo ticket");
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllTickets() 
-        {
-            int companyId = (await GetLoggedInUser()).CompanyId;
-            var result = await _ticketsRepository.GetAllTickets(companyId);
-            var resultDtos = _mapper.Map<List<TicketDTO>>(result);
-            return Ok(resultDtos);
-        }
-
-        private async Task<User> GetLoggedInUser()
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            return user;
-        }
-
     }
 }

@@ -57,7 +57,6 @@ namespace Tickets.WebAPI.Controllers
             }
             catch (System.Exception ex)
             {
-                
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco Dados Falhou {ex.Message}");
             }
         }
@@ -66,7 +65,8 @@ namespace Tickets.WebAPI.Controllers
             var claims = new List<Claim> 
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("CompanyId", user.CompanyId.ToString())
             };
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)

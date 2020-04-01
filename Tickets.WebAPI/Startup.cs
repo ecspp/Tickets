@@ -24,6 +24,7 @@ using AutoMapper;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.OpenApi.Models;
 
 namespace Tickets.WebAPI
 {
@@ -77,11 +78,33 @@ namespace Tickets.WebAPI
                     options.EnableEndpointRouting = false;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            
-            // services.AddScoped<ITicketsRepository, TicketsRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<ITicketsRepository, TicketsRepository>();
             services.AddAutoMapper(typeof(Startup));
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo {
+                    Title = "Tickets WebAPI",
+                    Version = "v1"
+                });
+                c.AddSecurityDefinition(
+                    "bearer",
+                    new OpenApiSecurityScheme {
+                        In = ParameterLocation.Header,
+                        Description = "Bearer token...",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        BearerFormat = "JWT",
+                        Scheme = "bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme {
+                            Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "bearer"},
+                        },
+                        new List<string>()
+                    }
+                });
+            });
             services.AddCors();
         }
 
@@ -96,6 +119,10 @@ namespace Tickets.WebAPI
             // app.UseHttpsRedirection();
 
             app.UseAuthentication();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tickets API v1 Documentation");
+            });
 
             app.UseCors( x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin());
 
