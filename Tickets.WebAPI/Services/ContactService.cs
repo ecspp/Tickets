@@ -42,7 +42,6 @@ namespace Tickets.WebAPI.Services
         {
             var companyId = _httpContextAcessor.GetCompanyId();
             return await _dataContext.Contacts.Where(x => x.CompanyId == companyId).ToListAsync();
-
         }
 
         public async Task<Contact> GetContactByIdAsync(Guid contactId)

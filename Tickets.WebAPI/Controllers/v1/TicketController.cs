@@ -11,9 +11,11 @@ using System;
 using Tickets.WebAPI.Data;
 using System.Collections.Generic;
 
+
 namespace Tickets.WebAPI.Controllers.v1
 {
     [Authorize]
+    [ApiController]
     public class TicketController : BaseController
     {
         private readonly ITicketService _ticketService;
@@ -25,14 +27,6 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPost(ApiRoutes.Ticket.Create)]
         public async Task<ActionResult> Create([FromBody] TicketCreateRequest createRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new TicketCreateResponse
-                {
-                    Success = false,
-                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
-                });
-            }
             var userId = GetUserId();
             var companyId = GetCompanyId();
 
@@ -66,15 +60,6 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPut(ApiRoutes.Ticket.Update)]
         public async Task<ActionResult> Update([FromRoute] Guid ticketId, [FromBody] TicketUpdateRequest updateRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new TicketUpdateResponse
-                {
-                    Success = false,
-                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
-                });
-            }
-            
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             if (ticket == null)
             {

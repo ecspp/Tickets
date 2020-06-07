@@ -9,7 +9,7 @@ namespace Tickets.WebAPI.Installers
     {
         public static void InstallMvc(this IServiceCollection services)
         {
-            services.AddMvcCore(options =>
+            services.AddMvc(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
@@ -17,7 +17,10 @@ namespace Tickets.WebAPI.Installers
                 options.Filters.Add(new AuthorizeFilter(policy));
                 options.EnableEndpointRouting = false;
             })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(options => {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
         }
     }
 }
