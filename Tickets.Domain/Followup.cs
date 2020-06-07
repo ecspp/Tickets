@@ -1,17 +1,16 @@
-using Tickets.Domain.Identity;
+using System;
 
 namespace Tickets.Domain
 {
-    public class Followup : BaseEntity
-    {
-        public int Id { get; set; }
+    public class Followup {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public int? TicketId { get; set; }
-        public Ticket Ticket { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
-        public int? CompanyId { get; set; }
-        public Company Company { get; set; }
+        public Guid? TicketId { get; set; }
+        public virtual Ticket Ticket { get; set; }
+        public Guid UserId { get; set; }
+        public virtual User User { get; set; }
+        public Guid? CompanyId { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

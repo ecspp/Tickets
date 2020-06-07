@@ -1,10 +1,12 @@
+using System;
+
 namespace Tickets.Domain
 {
     public class Contact
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
-        public int? CompanyId { get; set; }
-        public Company Company { get; set; }
+        public Guid? CompanyId { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

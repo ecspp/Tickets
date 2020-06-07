@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickets.Domain", "Tickets.Domain\Tickets.Domain.csproj", "{918FE595-2BC7-4791-B3EC-A78EBF352E1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickets.Repository", "Tickets.Repository\Tickets.Repository.csproj", "{B012E0C0-1539-4758-9620-6C2FDCDAAF12}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickets.WebAPI", "Tickets.WebAPI\Tickets.WebAPI.csproj", "{846497BE-71D9-44A4-BFE1-7A5451623D92}"
 EndProject
 Global
