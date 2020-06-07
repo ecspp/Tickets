@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Tickets.Domain;
-using Tickets.WebAPI.Contracts.v1.Requests;
-using Tickets.WebAPI.Contracts.v1.Responses;
 using Tickets.WebAPI.Data;
+using Tickets.WebAPI.Extensions;
 
 namespace Tickets.WebAPI.Services
 {
@@ -15,8 +15,10 @@ namespace Tickets.WebAPI.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly DataContext _dataContext;
-        public TicketService(UserManager<User> userManager, DataContext dataContext)
+        private readonly IHttpContextAccessor _httpContextAcessor;
+        public TicketService(UserManager<User> userManager, DataContext dataContext, IHttpContextAccessor httpContextAcessor)
         {
+            this._httpContextAcessor = httpContextAcessor;
             this._dataContext = dataContext;
             this._userManager = userManager;
 
@@ -28,26 +30,23 @@ namespace Tickets.WebAPI.Services
             return created > 0;
         }
 
-        public async Task<bool> DeleteTicketAsync(Guid ticketId, Guid userId)
+        public async Task<bool> DeleteTicketAsync(Guid ticketId)
         {
-            var ticket = await GetTicketByIdAsync(ticketId, userId);
+            var ticket = await GetTicketByIdAsync(ticketId);
             _dataContext.Tickets.Remove(ticket);
             var deleted = await _dataContext.SaveChangesAsync();
             return deleted > 0;
         }
 
-        public async Task<IEnumerable<Ticket>> GetAllTicketsAsync(Guid userId)
+        public async Task<ICollection<Ticket>> GetAllTicketsAsync()
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-
-            if (user != null) {
-                return await _dataContext.Tickets.Where(x => x.UserId == userId && x.CompanyId == user.CompanyId).ToListAsync();
-            }
-            return Enumerable.Empty<Ticket>();
+            var companyId = _httpContextAcessor.GetCompanyId();
+            return await _dataContext.Tickets.Where(x => x.CompanyId == companyId).ToListAsync();
         }
 
-        public async Task<Ticket> GetTicketByIdAsync(Guid ticketId, Guid companyId)
+        public async Task<Ticket> GetTicketByIdAsync(Guid ticketId)
         {
+            var companyId = _httpContextAcessor.GetCompanyId();
             return await _dataContext.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId && x.UserId == companyId);
         }
 

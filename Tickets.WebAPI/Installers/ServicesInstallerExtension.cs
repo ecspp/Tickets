@@ -12,6 +12,7 @@ namespace Tickets.WebAPI.Installers
     {
         public static void InstallServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddHttpContextAccessor();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ITicketService, TicketService>();

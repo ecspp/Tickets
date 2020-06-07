@@ -9,6 +9,7 @@ using Tickets.WebAPI.Services;
 using Tickets.Domain;
 using System;
 using Tickets.WebAPI.Data;
+using System.Collections.Generic;
 
 namespace Tickets.WebAPI.Controllers.v1
 {
@@ -16,12 +17,9 @@ namespace Tickets.WebAPI.Controllers.v1
     public class TicketController : BaseController
     {
         private readonly ITicketService _ticketService;
-        private readonly DataContext _dataContext;
-        public TicketController(ITicketService ticketService, DataContext dataContext)
+        public TicketController(ITicketService ticketService)
         {
-            this._dataContext = dataContext;
             this._ticketService = ticketService;
-
         }
 
         [HttpPost(ApiRoutes.Ticket.Create)]
@@ -77,7 +75,7 @@ namespace Tickets.WebAPI.Controllers.v1
                 });
             }
             
-            var ticket = await _ticketService.GetTicketByIdAsync(ticketId, GetCompanyId());
+            var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             if (ticket == null)
             {
                 return BadRequest(new TicketUpdateResponse
@@ -110,7 +108,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpGet(ApiRoutes.Ticket.Get)]
         public async Task<ActionResult> Get([FromRoute] Guid ticketId)
         {
-            var ticket = await _ticketService.GetTicketByIdAsync(ticketId, GetCompanyId());
+            var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
 
             if (ticket == null)
             {
@@ -125,10 +123,10 @@ namespace Tickets.WebAPI.Controllers.v1
             });
         }
 
-        [HttpGet(ApiRoutes.Ticket.Delete)]
+        [HttpDelete(ApiRoutes.Ticket.Delete)]
         public async Task<ActionResult> Delete([FromRoute] Guid ticketId)
         {
-            var ticket = await _ticketService.DeleteTicketAsync(ticketId, GetUserId());
+            var ticket = await _ticketService.DeleteTicketAsync(ticketId);
 
             if (!ticket) {
                 return NotFound();
@@ -140,7 +138,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpGet(ApiRoutes.Ticket.GetAll)]
         public async Task<ActionResult> GetAll()
         {
-            var tickets = await _ticketService.GetAllTicketsAsync(GetUserId());
+            var tickets = await _ticketService.GetAllTicketsAsync();
 
             return Ok(new {Tickets = tickets});
         }

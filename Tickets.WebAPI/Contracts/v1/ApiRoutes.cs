@@ -21,5 +21,14 @@ namespace Tickets.WebAPI.Contracts.v1
             public const string Delete = Base + "/ticket/{ticketId}";
             public const string Get = Base + "/ticket/{ticketId}";
         }
+
+        public static class Contact
+        {
+            public const string GetAll = Base + "/contact";
+            public const string Create = Base + "/contact";
+            public const string Update = Base + "/contact/{contactId}";
+            public const string Delete = Base + "/contact/{contactId}";
+            public const string Get = Base + "/contact/{contactId}";
+        }
     }
 }
