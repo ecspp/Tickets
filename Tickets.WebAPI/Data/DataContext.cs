@@ -13,29 +13,9 @@ namespace Tickets.WebAPI.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Followup> Followups { get; set; }
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-        }
-
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     base
-        //     // optionsBuilder.UseLazyLoadingProxies()
-        // }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-
-            // builder.Entity<User>(b =>
-            // {
-            //     b.Property(u => u.Id).HasDefaultValueSql("newsequentialid()");
-            // });
-
-            // builder.Entity<Role>(b => {
-            //     b.Property(r => r.Id).HasDefaultValueSql("newsequentialid()");
-            // });
-
         }
     }
 }
