@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.Domain;
 using Tickets.WebAPI.Contracts.v1;
+using Tickets.WebAPI.Contracts.v1.DTOs;
 using Tickets.WebAPI.Contracts.v1.Requests;
 using Tickets.WebAPI.Contracts.v1.Responses;
 using Tickets.WebAPI.Services;
@@ -27,15 +29,11 @@ namespace Tickets.WebAPI.Controllers.v1
         }
 
         [HttpPost(ApiRoutes.Contact.Create)]
-        public async Task<ActionResult> Create([FromBody] ContactCreateRequest createRequest)
+        [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Create([FromBody] ContactDTO createRequest)
         {
-            var newContact = new Contact
-            {
-                Name = createRequest.Name,
-                Email = createRequest.Email,
-                CompanyId = GetCompanyId()
-            };
-
+            var newContact = _mapper.Map<Contact>(createRequest);
             var created = await _contactService.CreateContactAsync(newContact);
             if (!created)
             {
@@ -43,15 +41,13 @@ namespace Tickets.WebAPI.Controllers.v1
                 return ValidationProblem();
             }
 
-            return Ok(new ContactCreateResponse
-            {
-                Succes = true,
-                Id = newContact.Id.ToString(),
-                Name = newContact.Name
-            });
+            var contactDto = _mapper.Map<ContactDTO>(newContact);
+            return Ok(contactDto);
         }
 
         [HttpPut(ApiRoutes.Contact.Update)]
+        [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Update([FromRoute] Guid contactId, [FromBody] ContactUpdateRequest updateRequest)
         {
             var contact = await _contactService.GetContactByIdAsync(contactId);
@@ -71,46 +67,45 @@ namespace Tickets.WebAPI.Controllers.v1
                 return ValidationProblem();
             }
 
-            return Ok(new ContactCreateResponse
-            {
-                Name = contact.Name,
-                Email = contact.Email
-            });
+            var contactDto = _mapper.Map<ContactDTO>(updated);
+
+            return Ok(contactDto);
         }
 
         [HttpGet(ApiRoutes.Contact.Get)]
+        [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetAction([FromRoute] Guid contactId)
         {
             var contact = await _contactService.GetContactByIdAsync(contactId);
 
             if (contact == null)
             {
-                ModelState.AddModelError("Contact", "Contact not found");
-                return ValidationProblem();
+                return NotFound();
             }
 
-            return Ok(new ContactDTO
-            {
-                Name = contact.Name,
-                Email = contact.Email
-            });
+            var contactDto = _mapper.Map<ContactDTO>(contact);
+
+            return Ok(contactDto);
         }
 
         [HttpDelete(ApiRoutes.Contact.Delete)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete([FromRoute] Guid contactId)
         {
             var deleted = await _contactService.DeleteContactAsync(contactId);
 
             if (!deleted)
             {
-                ModelState.AddModelError("Contact", "It was not possible to delete the contact");
-                return ValidationProblem();
+                return NotFound();
             }
 
             return Ok();
         }
 
         [HttpGet(ApiRoutes.Contact.GetAll)]
+        [ProducesResponseType(typeof(List<ContactDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll()
         {
             var contacts = await _contactService.GetAllContactsAsync();

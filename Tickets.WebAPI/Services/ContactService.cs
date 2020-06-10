@@ -25,6 +25,8 @@ namespace Tickets.WebAPI.Services
         }
         public async Task<bool> CreateContactAsync(Contact contact)
         {
+            contact.CompanyId = _httpContextAcessor.GetCompanyId();
+            contact.CreatedAt = DateTime.UtcNow;
             await _dataContext.Contacts.AddAsync(contact);
             var created = await _dataContext.SaveChangesAsync();
             return created > 0;
@@ -53,6 +55,9 @@ namespace Tickets.WebAPI.Services
         public async Task<bool> UpdateContactAsync(Contact contact)
         {
             _dataContext.Contacts.Update(contact);
+            _dataContext.Entry(contact).State = EntityState.Modified;
+            _dataContext.Entry(contact).Property(x => x.CreatedAt).IsModified = false;
+            contact.UpdatedAt = DateTime.UtcNow;
             var updated = await _dataContext.SaveChangesAsync();
             return updated > 0;
         }

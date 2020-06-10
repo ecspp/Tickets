@@ -25,6 +25,7 @@ namespace Tickets.WebAPI.Services
         }
         public async Task<bool> CreateTicketAsync(Ticket ticket)
         {
+            ticket.CreatedAt = DateTime.UtcNow;
             await _dataContext.Tickets.AddAsync(ticket);
             var created = await _dataContext.SaveChangesAsync();
             return created > 0;
@@ -52,6 +53,7 @@ namespace Tickets.WebAPI.Services
 
         public async Task<bool> UpdateTicketAsync(Ticket ticket)
         {
+            ticket.UpdatedAt = DateTime.UtcNow;
             _dataContext.Tickets.Update(ticket);
             var updated = await _dataContext.SaveChangesAsync();
             return updated > 0;

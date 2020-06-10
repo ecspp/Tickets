@@ -10,7 +10,10 @@ using Tickets.Domain;
 using System;
 using Tickets.WebAPI.Data;
 using System.Collections.Generic;
-
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Tickets.WebAPI.Contracts.v1.DTOs;
 
 namespace Tickets.WebAPI.Controllers.v1
 {
@@ -18,13 +21,17 @@ namespace Tickets.WebAPI.Controllers.v1
     [ApiController]
     public class TicketController : BaseController
     {
+        private readonly IMapper _mapper;
         private readonly ITicketService _ticketService;
-        public TicketController(ITicketService ticketService)
+        public TicketController(ITicketService ticketService, IMapper mapper)
         {
+            this._mapper = mapper;
             this._ticketService = ticketService;
         }
 
         [HttpPost(ApiRoutes.Ticket.Create)]
+        [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Create([FromBody] TicketCreateRequest createRequest)
         {
             var userId = GetUserId();
@@ -43,31 +50,25 @@ namespace Tickets.WebAPI.Controllers.v1
 
             if (!createdTicket)
             {
-                return BadRequest(new TicketCreateResponse
-                {
-                    Success = false,
-                    Errors = new[] { "Não foi possível salvar o ticket" }
-                });
+                ModelState.AddModelError("Ticket", "Unable to save new ticket");
+                return ValidationProblem();
             }
 
-            return Ok(new TicketCreateResponse
-            {
-                Success = true,
-                Id = ticket.Id.ToString()
-            });
+            var ticketDto = _mapper.Map<TicketDTO>(ticket);
+
+            return Ok(ticketDto);
         }
 
         [HttpPut(ApiRoutes.Ticket.Update)]
+        [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Update([FromRoute] Guid ticketId, [FromBody] TicketUpdateRequest updateRequest)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             if (ticket == null)
             {
-                return BadRequest(new TicketUpdateResponse
-                {
-                    Success = false,
-                    Errors = new[] { "Ticket not found" }
-                });
+                ModelState.AddModelError("Ticket", "Ticket not found");
+                return ValidationProblem();
             }
 
             ticket.Description = updateRequest.Description;
@@ -77,55 +78,56 @@ namespace Tickets.WebAPI.Controllers.v1
 
             if (!updated)
             {
-                return BadRequest(new TicketUpdateResponse
-                {
-                    Success = false,
-                    Errors = new[] { "Could not update the ticket" }
-                });
+                ModelState.AddModelError("Ticket", "Could not update the ticket");
+                return ValidationProblem();
             }
 
-            return Ok(new TicketUpdateResponse
-            {
-                Success = true
-            });
+            var ticketDto = _mapper.Map<TicketDTO>(ticket);
+
+            return Ok(ticketDto);
         }
 
         [HttpGet(ApiRoutes.Ticket.Get)]
+        [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Get([FromRoute] Guid ticketId)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
+            
 
             if (ticket == null)
             {
-                return BadRequest(new {Errors = new[] {"Ticket not found"}});
+                return NotFound();
             }
 
-            return Ok(new TicketDTO{
-                Title = ticket.Title,
-                Description = ticket.Description,
-                UserId = ticket.UserId.ToString(),
-                UserName = ticket.User.UserName
-            });
+            var ticketDto = _mapper.Map<TicketDTO>(ticket);
+            return Ok(ticketDto);
         }
 
         [HttpDelete(ApiRoutes.Ticket.Delete)]
+        [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult> Delete([FromRoute] Guid ticketId)
         {
             var ticket = await _ticketService.DeleteTicketAsync(ticketId);
 
-            if (!ticket) {
+            if (!ticket)
+            {
                 return NotFound();
             }
-
-            return Ok();
+            
+            var ticketDto = _mapper.Map<TicketDTO>(ticket);
+            return Ok(ticketDto);
         }
 
         [HttpGet(ApiRoutes.Ticket.GetAll)]
+        [ProducesResponseType(typeof(List<TicketDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll()
         {
             var tickets = await _ticketService.GetAllTicketsAsync();
-
-            return Ok(new {Tickets = tickets});
+            var ticketsDtoList = _mapper.Map<List<TicketDTO>>(tickets);
+            return Ok(ticketsDtoList);
         }
     }
 }

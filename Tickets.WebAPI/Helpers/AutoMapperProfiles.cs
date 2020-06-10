@@ -1,7 +1,6 @@
 using AutoMapper;
 using Tickets.Domain;
-using Tickets.WebAPI.Contracts.v1.Requests;
-using Tickets.WebAPI.Contracts.v1.Responses;
+using Tickets.WebAPI.Contracts.v1.DTOs;
 
 namespace Tickets.WebAPI.Helpers
 {
@@ -9,15 +8,8 @@ namespace Tickets.WebAPI.Helpers
     {
         public AutoMapperProfiles()
         {
-            // CreateMap<CompanyUserRegistrationDTO, User>();
-            // CreateMap<CompanyRegistrationDTO, Company>();
-            // TODO: CREATE MAPER TO NEW CONTRACTS
-            // CreateMap<CompanyRegistrationDTO, Company>().ReverseMap();
-            // CreateMap<FirstUserDTO, User>().ReverseMap();
-            // CreateMap<UserDTO, User>().ReverseMap();
-            // CreateMap<CompanyDTO, Company>().ReverseMap();
-            // CreateMap<TicketDTO, Ticket>().ReverseMap();
-            CreateMap<Contact, ContactDTO>();
+            CreateMap<Contact, ContactDTO>().ReverseMap();
+            CreateMap<Ticket, TicketDTO>();
         }
     }
 }
