@@ -21,6 +21,8 @@ namespace Tickets.WebAPI.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+            
             builder
                 .Entity<Ticket>()
                 .Property(t => t.CreatedAt)
