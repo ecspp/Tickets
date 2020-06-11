@@ -38,6 +38,16 @@ namespace Tickets.WebAPI.Data
                 .Property(t => t.AuthorId)
                 .IsRequired()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            builder
+                .Entity<Ticket>()
+                .Property(t => t.Title)
+                .IsRequired()
+                .HasMaxLength(150);
+            builder
+                .Entity<Ticket>()
+                .Property(t => t.AuthorId)
+                .IsRequired()
+                .HasMaxLength(5000);
 
             builder
                 .Entity<User>()
@@ -52,19 +62,40 @@ namespace Tickets.WebAPI.Data
 
             builder
                 .Entity<Followup>()
-                .Property(u => u.CreatedAt)
+                .Property(t => t.CreatedAt)
                 .IsRequired()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder
                 .Entity<Followup>()
-                .Property(u => u.CompanyId)
+                .Property(t => t.CompanyId)
                 .IsRequired()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             builder
                 .Entity<Followup>()
-                .Property(u => u.TicketId)
+                .Property(t => t.TicketId)
                 .IsRequired()
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            builder
+                .Entity<Followup>()
+                .Property(t => t.Title)
+                .IsRequired()
+                .HasMaxLength(150);
+            builder
+                .Entity<Followup>()
+                .Property(t => t.Description)
+                .IsRequired()
+                .HasMaxLength(5000);
+
+            builder
+                .Entity<Contact>()
+                .Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            builder
+                .Entity<Contact>()
+                .Property(c => c.Email)
+                .IsRequired()
+                .HasMaxLength(255);
  
         }
     }

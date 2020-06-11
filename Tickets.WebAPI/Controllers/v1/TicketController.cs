@@ -11,6 +11,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Tickets.WebAPI.Contracts.v1.DTOs;
 using Tickets.WebAPI.Extensions;
+using Tickets.WebAPI.Contracts.v1.Requests.Creation;
 
 namespace Tickets.WebAPI.Controllers.v1
 {
@@ -29,7 +30,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPost(ApiRoutes.Ticket.Create)]
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Create([FromBody] TicketCreateRequest createRequest)
+        public async Task<ActionResult> Create([FromBody] AddTicketDTO createRequest)
         {
             var ticket = new Ticket
             {
@@ -54,7 +55,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPut(ApiRoutes.Ticket.Update)]
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Update([FromRoute] long ticketId, [FromBody] TicketUpdateRequest updateRequest)
+        public async Task<ActionResult> Update([FromRoute] long ticketId, [FromBody] TicketDTO updateRequest)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             if (ticket == null)

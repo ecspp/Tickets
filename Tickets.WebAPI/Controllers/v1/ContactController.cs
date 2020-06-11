@@ -48,7 +48,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPut(ApiRoutes.Contact.Update)]
         [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Update([FromRoute] int contactId, [FromBody] ContactUpdateRequest updateRequest)
+        public async Task<ActionResult> Update([FromRoute] int contactId, [FromBody] ContactDTO updateRequest)
         {
             var contact = await _contactService.GetContactByIdAsync(contactId);
             if (contact == null)

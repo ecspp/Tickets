@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.WebAPI.Contracts.v1;
 using Tickets.WebAPI.Contracts.v1.Requests;
@@ -8,6 +9,7 @@ using Tickets.WebAPI.Services;
 
 namespace Tickets.WebAPI.Controllers.v1
 {
+    [AllowAnonymous]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;

@@ -1,9 +1,12 @@
 using System.Text;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Tickets.Domain.Options;
+using Tickets.WebAPI.Contracts.v1.Requests.Creation;
+using Tickets.WebAPI.Contracts.v1.Requests.Creation.Validation;
 using Tickets.WebAPI.Services;
 
 namespace Tickets.WebAPI.Installers
@@ -45,7 +48,7 @@ namespace Tickets.WebAPI.Installers
                 x.TokenValidationParameters = tokenValidationParameters;
             });
 
-            services.AddControllers();
+            // services.AddControllers();
             
         }
     }

@@ -27,7 +27,8 @@ namespace Tickets.WebAPI
             services.InstallDatabase(Configuration);
             services.InstallServices(Configuration);
             services.InstallIdentityCore();
-            // services.InstallMvc();
+            services.InstallMvc();
+            services.InstallValidationServices();
             services.AddAutoMapper(typeof(Startup));
 
             services.InstallSwagger();

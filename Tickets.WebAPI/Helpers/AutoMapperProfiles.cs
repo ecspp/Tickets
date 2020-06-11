@@ -9,7 +9,7 @@ namespace Tickets.WebAPI.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<Contact, ContactDTO>().ReverseMap();
-            CreateMap<Ticket, TicketDTO>();
+            CreateMap<Ticket, TicketDTO>().ReverseMap();
         }
     }
 }
