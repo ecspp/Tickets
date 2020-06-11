@@ -30,7 +30,7 @@ namespace Tickets.WebAPI.Services
             return created > 0;
         }
 
-        public async Task<bool> DeleteFollowupAsync(int followupId)
+        public async Task<bool> DeleteFollowupAsync(long followupId)
         {
             var followup = await GetFollowupByIdAsync(followupId);
             _dataContext.Remove(followup);
@@ -44,7 +44,7 @@ namespace Tickets.WebAPI.Services
             return await _dataContext.Followups.Where(x => x.CompanyId == companyId).ToListAsync();
         }
 
-        public async Task<Followup> GetFollowupByIdAsync(int followupId)
+        public async Task<Followup> GetFollowupByIdAsync(long followupId)
         {
             var companyId = _httpContextAcessor.GetCompanyId();
             return await _dataContext.Followups.FirstOrDefaultAsync(x => x.Id == followupId && x.CompanyId == companyId);

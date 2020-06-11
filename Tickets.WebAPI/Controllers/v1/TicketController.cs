@@ -54,7 +54,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPut(ApiRoutes.Ticket.Update)]
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Update([FromRoute] int ticketId, [FromBody] TicketUpdateRequest updateRequest)
+        public async Task<ActionResult> Update([FromRoute] long ticketId, [FromBody] TicketUpdateRequest updateRequest)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             if (ticket == null)
@@ -82,7 +82,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpGet(ApiRoutes.Ticket.Get)]
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> Get([FromRoute] int ticketId)
+        public async Task<ActionResult> Get([FromRoute] long ticketId)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             
@@ -100,7 +100,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public async Task<ActionResult> Delete([FromRoute] int ticketId)
+        public async Task<ActionResult> Delete([FromRoute] long ticketId)
         {
             var ticket = await _ticketService.DeleteTicketAsync(ticketId);
 
