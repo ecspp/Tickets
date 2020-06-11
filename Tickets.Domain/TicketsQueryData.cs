@@ -4,7 +4,7 @@ namespace Tickets.Domain
 {
     public class TicketsQueryData
     {
-        public Guid CompanyId { get; set; }
-        public Guid UserId { get; set; }
+        public int CompanyId { get; set; }
+        public int UserId { get; set; }
     }
 }

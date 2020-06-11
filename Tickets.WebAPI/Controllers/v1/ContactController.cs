@@ -48,7 +48,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPut(ApiRoutes.Contact.Update)]
         [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Update([FromRoute] Guid contactId, [FromBody] ContactUpdateRequest updateRequest)
+        public async Task<ActionResult> Update([FromRoute] int contactId, [FromBody] ContactUpdateRequest updateRequest)
         {
             var contact = await _contactService.GetContactByIdAsync(contactId);
             if (contact == null)
@@ -75,7 +75,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpGet(ApiRoutes.Contact.Get)]
         [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetAction([FromRoute] Guid contactId)
+        public async Task<ActionResult> GetAction([FromRoute] int contactId)
         {
             var contact = await _contactService.GetContactByIdAsync(contactId);
 
@@ -92,7 +92,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpDelete(ApiRoutes.Contact.Delete)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> Delete([FromRoute] Guid contactId)
+        public async Task<ActionResult> Delete([FromRoute] int contactId)
         {
             var deleted = await _contactService.DeleteContactAsync(contactId);
 

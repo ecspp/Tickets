@@ -32,7 +32,7 @@ namespace Tickets.WebAPI.Services
             return created > 0;
         }
 
-        public async Task<bool> DeleteContactAsync(Guid contactId)
+        public async Task<bool> DeleteContactAsync(int contactId)
         {
             var contact = await GetContactByIdAsync(contactId);
             _dataContext.Contacts.Remove(contact);
@@ -46,7 +46,7 @@ namespace Tickets.WebAPI.Services
             return await _dataContext.Contacts.Where(x => x.CompanyId == companyId).ToListAsync();
         }
 
-        public async Task<Contact> GetContactByIdAsync(Guid contactId)
+        public async Task<Contact> GetContactByIdAsync(int contactId)
         {
             var companyId = _httpContextAcessor.GetCompanyId();
             return await _dataContext.Contacts.FirstOrDefaultAsync(x => x.Id == contactId && x.CompanyId == companyId);

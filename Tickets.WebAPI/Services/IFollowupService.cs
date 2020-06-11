@@ -9,8 +9,8 @@ namespace Tickets.WebAPI.Services
     {
         public Task<bool> CreateFollowupAsync(Followup followup);
         public Task<bool> UpdateFollowupAsync(Followup followup);
-        public Task<bool> DeleteFollowupAsync(Guid followupId);
-        public Task<Followup> GetFollowupByIdAsync(Guid followupId);
+        public Task<bool> DeleteFollowupAsync(int followupId);
+        public Task<Followup> GetFollowupByIdAsync(int followupId);
         public Task<ICollection<Followup>> GetAllFollowupsAsync();
     }
 }

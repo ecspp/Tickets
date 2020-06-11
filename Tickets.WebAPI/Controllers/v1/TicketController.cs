@@ -1,19 +1,16 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.WebAPI.Contracts.v1;
 using Tickets.WebAPI.Contracts.v1.Requests;
-using Tickets.WebAPI.Contracts.v1.Responses;
 using Tickets.WebAPI.Services;
 using Tickets.Domain;
 using System;
-using Tickets.WebAPI.Data;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Tickets.WebAPI.Contracts.v1.DTOs;
+using Tickets.WebAPI.Extensions;
 
 namespace Tickets.WebAPI.Controllers.v1
 {
@@ -34,15 +31,10 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Create([FromBody] TicketCreateRequest createRequest)
         {
-            var userId = GetUserId();
-            var companyId = GetCompanyId();
-
             var ticket = new Ticket
             {
                 Title = createRequest.Title,
-                Description = createRequest.Description,
-                UserId = userId,
-                CompanyId = companyId
+                Description = createRequest.Description
             };
 
             var createdTicket = await _ticketService.CreateTicketAsync(ticket);
@@ -62,7 +54,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPut(ApiRoutes.Ticket.Update)]
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Update([FromRoute] Guid ticketId, [FromBody] TicketUpdateRequest updateRequest)
+        public async Task<ActionResult> Update([FromRoute] int ticketId, [FromBody] TicketUpdateRequest updateRequest)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             if (ticket == null)
@@ -90,7 +82,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpGet(ApiRoutes.Ticket.Get)]
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> Get([FromRoute] Guid ticketId)
+        public async Task<ActionResult> Get([FromRoute] int ticketId)
         {
             var ticket = await _ticketService.GetTicketByIdAsync(ticketId);
             
@@ -108,7 +100,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(typeof(TicketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public async Task<ActionResult> Delete([FromRoute] Guid ticketId)
+        public async Task<ActionResult> Delete([FromRoute] int ticketId)
         {
             var ticket = await _ticketService.DeleteTicketAsync(ticketId);
 

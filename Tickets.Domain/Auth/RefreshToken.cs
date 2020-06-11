@@ -14,7 +14,7 @@ namespace Tickets.Domain
         public DateTime ExpiryDate { get; set; }
         public bool Used { get; set; }
         public bool Invalidated { get; set; }
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
     }

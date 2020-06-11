@@ -26,12 +26,14 @@ namespace Tickets.WebAPI.Services
         public async Task<bool> CreateTicketAsync(Ticket ticket)
         {
             ticket.CreatedAt = DateTime.UtcNow;
+            ticket.CompanyId = _httpContextAcessor.GetCompanyId();
+            ticket.AuthorId = _httpContextAcessor.GetUserId();
             await _dataContext.Tickets.AddAsync(ticket);
             var created = await _dataContext.SaveChangesAsync();
             return created > 0;
         }
 
-        public async Task<bool> DeleteTicketAsync(Guid ticketId)
+        public async Task<bool> DeleteTicketAsync(int ticketId)
         {
             var ticket = await GetTicketByIdAsync(ticketId);
             _dataContext.Tickets.Remove(ticket);
@@ -45,10 +47,10 @@ namespace Tickets.WebAPI.Services
             return await _dataContext.Tickets.Where(x => x.CompanyId == companyId).ToListAsync();
         }
 
-        public async Task<Ticket> GetTicketByIdAsync(Guid ticketId)
+        public async Task<Ticket> GetTicketByIdAsync(int ticketId)
         {
             var companyId = _httpContextAcessor.GetCompanyId();
-            return await _dataContext.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId && x.UserId == companyId);
+            return await _dataContext.Tickets.FirstOrDefaultAsync(x => x.Id == ticketId && x.CompanyId == companyId);
         }
 
         public async Task<bool> UpdateTicketAsync(Ticket ticket)
@@ -58,5 +60,6 @@ namespace Tickets.WebAPI.Services
             var updated = await _dataContext.SaveChangesAsync();
             return updated > 0;
         }
+
     }
 }
