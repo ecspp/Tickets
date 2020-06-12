@@ -1,5 +1,3 @@
-using System.Diagnostics.Contracts;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Tickets.Domain;
 using Tickets.WebAPI.Contracts.v1;
 using Tickets.WebAPI.Contracts.v1.DTOs;
-using Tickets.WebAPI.Contracts.v1.Requests;
-using Tickets.WebAPI.Contracts.v1.Responses;
 using Tickets.WebAPI.Services;
 
 namespace Tickets.WebAPI.Controllers.v1

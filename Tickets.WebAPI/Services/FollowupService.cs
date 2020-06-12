@@ -25,6 +25,8 @@ namespace Tickets.WebAPI.Services
         public async Task<bool> CreateFollowupAsync(Followup followup)
         {
             followup.CreatedAt = DateTime.UtcNow;
+            followup.CompanyId = _httpContextAcessor.GetCompanyId();
+            followup.AuthorId = _httpContextAcessor.GetUserId();
             await _dataContext.Followups.AddAsync(followup);
             var created = await _dataContext.SaveChangesAsync();
             return created > 0;
@@ -38,10 +40,10 @@ namespace Tickets.WebAPI.Services
             return deleted > 0;
         }
 
-        public async Task<ICollection<Followup>> GetAllFollowupsAsync()
+        public async Task<ICollection<Followup>> GetAllFollowupsFromTicketAsync(long ticketId)
         {
             var companyId = _httpContextAcessor.GetCompanyId();
-            return await _dataContext.Followups.Where(x => x.CompanyId == companyId).ToListAsync();
+            return await _dataContext.Followups.Where(x => x.CompanyId == companyId && x.TicketId == ticketId).ToListAsync();
         }
 
         public async Task<Followup> GetFollowupByIdAsync(long followupId)

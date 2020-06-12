@@ -110,8 +110,7 @@ namespace Tickets.WebAPI.Controllers.v1
                 return NotFound();
             }
             
-            var ticketDto = _mapper.Map<TicketDTO>(ticket);
-            return Ok(ticketDto);
+            return Ok();
         }
 
         [HttpGet(ApiRoutes.Ticket.GetAll)]

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tickets.WebAPI.Data;
@@ -9,9 +10,10 @@ using Tickets.WebAPI.Data;
 namespace Tickets.WebAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200611234613_Change followup author collumns")]
+    partial class Changefollowupauthorcollumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,9 +183,6 @@ namespace Tickets.WebAPI.Data.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("CompanyId")
                         .IsRequired()
                         .HasColumnType("integer");
@@ -208,13 +207,16 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("Id");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("AuthorId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("TicketId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Followups");
                 });
@@ -460,12 +462,6 @@ namespace Tickets.WebAPI.Data.Migrations
 
             modelBuilder.Entity("Tickets.Domain.Followup", b =>
                 {
-                    b.HasOne("Tickets.Domain.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Tickets.Domain.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
@@ -475,6 +471,12 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.HasOne("Tickets.Domain.Ticket", "Ticket")
                         .WithMany("Followups")
                         .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tickets.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

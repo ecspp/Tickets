@@ -11,6 +11,6 @@ namespace Tickets.WebAPI.Services
         public Task<bool> UpdateFollowupAsync(Followup followup);
         public Task<bool> DeleteFollowupAsync(long followupId);
         public Task<Followup> GetFollowupByIdAsync(long followupId);
-        public Task<ICollection<Followup>> GetAllFollowupsAsync();
+        public Task<ICollection<Followup>> GetAllFollowupsFromTicketAsync(long ticketId);
     }
 }
