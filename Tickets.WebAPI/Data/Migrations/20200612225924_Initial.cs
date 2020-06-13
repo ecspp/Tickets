@@ -65,8 +65,8 @@ namespace Tickets.WebAPI.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    Email = table.Column<string>(maxLength: 255, nullable: false),
                     CompanyId = table.Column<int>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
@@ -236,12 +236,12 @@ namespace Tickets.WebAPI.Data.Migrations
                 name: "Tickets",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(maxLength: 150, nullable: false),
                     Description = table.Column<string>(nullable: true),
                     CompanyId = table.Column<int>(nullable: false),
-                    AuthorId = table.Column<int>(nullable: false),
+                    AuthorId = table.Column<int>(maxLength: 5000, nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -266,12 +266,12 @@ namespace Tickets.WebAPI.Data.Migrations
                 name: "Followups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    TicketId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(maxLength: 150, nullable: false),
+                    Description = table.Column<string>(maxLength: 5000, nullable: false),
+                    TicketId = table.Column<long>(nullable: false),
+                    AuthorId = table.Column<int>(nullable: false),
                     CompanyId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
@@ -279,6 +279,12 @@ namespace Tickets.WebAPI.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Followups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Followups_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Followups_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -291,10 +297,28 @@ namespace Tickets.WebAPI.Data.Migrations
                         principalTable: "Tickets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TicketContacts",
+                columns: table => new
+                {
+                    ContactId = table.Column<int>(nullable: false),
+                    TicketId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketContacts", x => new { x.ContactId, x.TicketId });
                     table.ForeignKey(
-                        name: "FK_Followups_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_TicketContacts_Contacts_ContactId",
+                        column: x => x.ContactId,
+                        principalTable: "Contacts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TicketContacts_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -352,6 +376,11 @@ namespace Tickets.WebAPI.Data.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Followups_AuthorId",
+                table: "Followups",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Followups_CompanyId",
                 table: "Followups",
                 column: "CompanyId");
@@ -362,14 +391,14 @@ namespace Tickets.WebAPI.Data.Migrations
                 column: "TicketId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Followups_UserId",
-                table: "Followups",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TicketContacts_TicketId",
+                table: "TicketContacts",
+                column: "TicketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_AuthorId",
@@ -404,6 +433,9 @@ namespace Tickets.WebAPI.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "TicketContacts");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

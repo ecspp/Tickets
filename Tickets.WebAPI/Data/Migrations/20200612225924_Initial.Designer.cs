@@ -10,7 +10,7 @@ using Tickets.WebAPI.Data;
 namespace Tickets.WebAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200611125403_Initial")]
+    [Migration("20200612225924_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,10 +157,14 @@ namespace Tickets.WebAPI.Data.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(255);
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(100)")
+                        .HasMaxLength(100);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -174,10 +178,13 @@ namespace Tickets.WebAPI.Data.Migrations
 
             modelBuilder.Entity("Tickets.Domain.Followup", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("CompanyId")
                         .IsRequired()
@@ -187,28 +194,29 @@ namespace Tickets.WebAPI.Data.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("TicketId")
                         .IsRequired()
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(5000)")
+                        .HasMaxLength(5000);
+
+                    b.Property<long?>("TicketId")
+                        .IsRequired()
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(150)")
+                        .HasMaxLength(150);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("TicketId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Followups");
                 });
@@ -274,14 +282,15 @@ namespace Tickets.WebAPI.Data.Migrations
 
             modelBuilder.Entity("Tickets.Domain.Ticket", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int?>("AuthorId")
                         .IsRequired()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasMaxLength(5000);
 
                     b.Property<int?>("CompanyId")
                         .IsRequired()
@@ -294,7 +303,9 @@ namespace Tickets.WebAPI.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(150)")
+                        .HasMaxLength(150);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -306,6 +317,21 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("Tickets.Domain.TicketContact", b =>
+                {
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("TicketId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ContactId", "TicketId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketContacts");
                 });
 
             modelBuilder.Entity("Tickets.Domain.User", b =>
@@ -451,6 +477,12 @@ namespace Tickets.WebAPI.Data.Migrations
 
             modelBuilder.Entity("Tickets.Domain.Followup", b =>
                 {
+                    b.HasOne("Tickets.Domain.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Tickets.Domain.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
@@ -460,12 +492,6 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.HasOne("Tickets.Domain.Ticket", "Ticket")
                         .WithMany("Followups")
                         .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tickets.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -490,6 +516,21 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.HasOne("Tickets.Domain.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Tickets.Domain.TicketContact", b =>
+                {
+                    b.HasOne("Tickets.Domain.Contact", "Contact")
+                        .WithMany("TicketContacts")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tickets.Domain.Ticket", "Ticket")
+                        .WithMany("TicketContacts")
+                        .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

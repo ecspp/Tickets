@@ -15,6 +15,7 @@ namespace Tickets.WebAPI.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Followup> Followups { get; set; }
+        public DbSet<TicketContact> TicketContacts { get; set; }
         
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -25,9 +26,29 @@ namespace Tickets.WebAPI.Data
             base.OnModelCreating(builder);
 
             ConfigureContactModel(builder);
-            ConfigureFollowupModel(builder);
             ConfigureTicketModel(builder);
+            ConfigureFollowupModel(builder);
             ConfigureUserModel(builder);
+            ConfigureTicketContacts(builder);
+        }
+
+        private void ConfigureTicketContacts(ModelBuilder builder)
+        {
+            builder
+                .Entity<TicketContact>()
+                .HasKey(tc => new {tc.ContactId, tc.TicketId});
+            
+            builder
+                .Entity<TicketContact>()
+                .HasOne(tc => tc.Ticket)
+                .WithMany(t => t.TicketContacts)
+                .HasForeignKey(tc => tc.TicketId);
+            
+            builder
+                .Entity<TicketContact>()
+                .HasOne(tc => tc.Contact)
+                .WithMany(c => c.TicketContacts)
+                .HasForeignKey(tc => tc.ContactId);
         }
 
         private void ConfigureContactModel(ModelBuilder builder)
@@ -71,6 +92,12 @@ namespace Tickets.WebAPI.Data
                 .Property(t => t.AuthorId)
                 .IsRequired()
                 .HasMaxLength(5000);
+            builder
+                .Entity<Ticket>()
+                .HasMany(t => t.Followups)
+                .WithOne(f => f.Ticket)
+                .OnDelete(DeleteBehavior.Cascade);
+            
         }
 
         private void ConfigureUserModel(ModelBuilder builder)

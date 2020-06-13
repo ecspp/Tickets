@@ -317,6 +317,21 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("Tickets.Domain.TicketContact", b =>
+                {
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("TicketId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ContactId", "TicketId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketContacts");
+                });
+
             modelBuilder.Entity("Tickets.Domain.User", b =>
                 {
                     b.Property<int>("Id")
@@ -499,6 +514,21 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.HasOne("Tickets.Domain.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Tickets.Domain.TicketContact", b =>
+                {
+                    b.HasOne("Tickets.Domain.Contact", "Contact")
+                        .WithMany("TicketContacts")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tickets.Domain.Ticket", "Ticket")
+                        .WithMany("TicketContacts")
+                        .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

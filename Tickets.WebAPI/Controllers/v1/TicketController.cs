@@ -2,15 +2,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tickets.WebAPI.Contracts.v1;
-using Tickets.WebAPI.Contracts.v1.Requests;
 using Tickets.WebAPI.Services;
 using Tickets.Domain;
-using System;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Tickets.WebAPI.Contracts.v1.DTOs;
-using Tickets.WebAPI.Extensions;
 using Tickets.WebAPI.Contracts.v1.Requests.Creation;
 
 namespace Tickets.WebAPI.Controllers.v1
