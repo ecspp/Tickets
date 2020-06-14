@@ -6,6 +6,6 @@ namespace Tickets.WebAPI.Contracts.v1.Requests.Creation
     {
         public string Name { get; set; }
         public string Email { get; set; }
-        public ICollection<int> ContactTypes { get; set; }
+        public ICollection<int> ContactTypeIds { get; set; }
     }
 }

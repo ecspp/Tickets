@@ -8,9 +8,9 @@ namespace Tickets.WebAPI.Services
     public interface IContactService
     {
         public Task<bool> CreateAsync(Contact contact);
-        public Task<bool> UpdateContactAsync(Contact contact);
-        public Task<bool> DeleteContactAsync(int contactId);
-        public Task<Contact> GetContactByIdAsync(int contactId);
-        public Task<ICollection<Contact>> GetAllContactsAsync();
+        public Task<bool> UpdateAsync(Contact contact);
+        public Task<bool> DeleteAsync(int contactId);
+        public Task<Contact> GetByIdAsync(int contactId);
+        public Task<ICollection<Contact>> GetAllAsync();
     }
 }

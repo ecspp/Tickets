@@ -32,27 +32,27 @@ namespace Tickets.WebAPI.Services
             return created > 0;
         }
 
-        public async Task<bool> DeleteContactAsync(int contactId)
+        public async Task<bool> DeleteAsync(int contactId)
         {
-            var contact = await GetContactByIdAsync(contactId);
+            var contact = await GetByIdAsync(contactId);
             _dataContext.Contacts.Remove(contact);
             var deleted = await _dataContext.SaveChangesAsync();
             return deleted > 0;
         }
 
-        public async Task<ICollection<Contact>> GetAllContactsAsync()
+        public async Task<ICollection<Contact>> GetAllAsync()
         {
             var companyId = _httpContextAcessor.GetCompanyId();
             return await _dataContext.Contacts.Where(x => x.CompanyId == companyId).ToListAsync();
         }
 
-        public async Task<Contact> GetContactByIdAsync(int contactId)
+        public async Task<Contact> GetByIdAsync(int contactId)
         {
             var companyId = _httpContextAcessor.GetCompanyId();
             return await _dataContext.Contacts.FirstOrDefaultAsync(x => x.Id == contactId && x.CompanyId == companyId);
         }
 
-        public async Task<bool> UpdateContactAsync(Contact contact)
+        public async Task<bool> UpdateAsync(Contact contact)
         {
             _dataContext.Contacts.Update(contact);
             _dataContext.Entry(contact).State = EntityState.Modified;

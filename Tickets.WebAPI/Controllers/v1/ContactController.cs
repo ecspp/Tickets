@@ -46,7 +46,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Update([FromRoute] int contactId, [FromBody] ContactDTO updateRequest)
         {
-            var contact = await _contactService.GetContactByIdAsync(contactId);
+            var contact = await _contactService.GetByIdAsync(contactId);
             if (contact == null)
             {
                 ModelState.AddModelError("Contact", "Contact not found");
@@ -56,7 +56,7 @@ namespace Tickets.WebAPI.Controllers.v1
             contact.Name = updateRequest.Name;
             contact.Email = updateRequest.Email;
 
-            var updated = await _contactService.UpdateContactAsync(contact);
+            var updated = await _contactService.UpdateAsync(contact);
             if (!updated)
             {
                 ModelState.AddModelError("Contact", "An error ocurred while updating the contact");
@@ -73,7 +73,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetAction([FromRoute] int contactId)
         {
-            var contact = await _contactService.GetContactByIdAsync(contactId);
+            var contact = await _contactService.GetByIdAsync(contactId);
 
             if (contact == null)
             {
@@ -90,7 +90,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete([FromRoute] int contactId)
         {
-            var deleted = await _contactService.DeleteContactAsync(contactId);
+            var deleted = await _contactService.DeleteAsync(contactId);
 
             if (!deleted)
             {
@@ -104,7 +104,7 @@ namespace Tickets.WebAPI.Controllers.v1
         [ProducesResponseType(typeof(List<ContactDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult> GetAll()
         {
-            var contacts = await _contactService.GetAllContactsAsync();
+            var contacts = await _contactService.GetAllAsync();
             List<ContactDTO> contactsDto = _mapper.Map<List<ContactDTO>>(contacts);
             return Ok(contactsDto);
         }
