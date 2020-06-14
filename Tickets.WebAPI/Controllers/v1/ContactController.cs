@@ -30,7 +30,7 @@ namespace Tickets.WebAPI.Controllers.v1
         public async Task<ActionResult> Create([FromBody] ContactDTO createRequest)
         {
             var newContact = _mapper.Map<Contact>(createRequest);
-            var created = await _contactService.CreateContactAsync(newContact);
+            var created = await _contactService.CreateAsync(newContact);
             if (!created)
             {
                 ModelState.AddModelError("Contact", "It was not possible to create the contact");

@@ -39,5 +39,14 @@ namespace Tickets.WebAPI.Contracts.v1
             public const string Get = Base + "/followup/{followupId}";
             public const string GetAllFromTicket = Base + "/followup/ticket/{ticketId}";
         }
+
+        public static class ContactType
+        {
+            public const string GetAll = Base + "/contacttype";
+            public const string Create = Base + "/contacttype";
+            public const string Update = Base + "/contacttype/{contactTypeId}";
+            public const string Delete = Base + "/contacttype/{contactTypeId}";
+            public const string Get = Base + "/contacttype/{contactTypeId}";
+        }
     }
 }

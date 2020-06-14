@@ -12,8 +12,12 @@ namespace Tickets.WebAPI.Installers
         public static void InstallValidationServices(this IServiceCollection services)
         {
             services.AddTransient<IValidator<AddFollowupDTO>, AddFollowupDtoValidator>();
+            
             services.AddTransient<IValidator<TicketDTO>, TicketDtoValidator>();
             services.AddTransient<IValidator<AddTicketDTO>, AddTicketDtoValidator>();
+
+            services.AddTransient<IValidator<AddContactTypeDTO>, AddContactTypeValidator>();
+            services.AddTransient<IValidator<ContactTypeDTO>, ContactTypeDtoValidator>();
         }
     }
 }

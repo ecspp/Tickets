@@ -11,6 +11,7 @@ namespace Tickets.WebAPI.Helpers
             CreateMap<Contact, ContactDTO>().ReverseMap();
             CreateMap<Ticket, TicketDTO>().ReverseMap();
             CreateMap<Followup, FollowupDTO>().ReverseMap();
+            CreateMap<ContactType, ContactTypeDTO>().ReverseMap();
         }
     }
 }

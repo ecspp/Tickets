@@ -16,6 +16,7 @@ namespace Tickets.WebAPI.Data
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Followup> Followups { get; set; }
         public DbSet<TicketContact> TicketContacts { get; set; }
+        public DbSet<ContactType> ContactTypes { get; set; }
         
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -30,6 +31,24 @@ namespace Tickets.WebAPI.Data
             ConfigureFollowupModel(builder);
             ConfigureUserModel(builder);
             ConfigureTicketContacts(builder);
+
+        }
+
+        private void ConfigureContactTypeContacts(ModelBuilder builder)
+        {
+            builder
+                .Entity<ContactTypeContact>()
+                .HasKey(ctc => new {ctc.ContactId, ctc.ContactTypeId});
+            builder
+                .Entity<ContactTypeContact>()
+                .HasOne(ctc => ctc.Contact)
+                .WithMany(c => c.ContactTypeContacts)
+                .HasForeignKey(ctc => ctc.ContactId);
+            builder
+                .Entity<ContactTypeContact>()
+                .HasOne(ctc => ctc.ContactType)
+                .WithMany(ct => ct.ContactTypeContacts)
+                .HasForeignKey(ctc => ctc.ContactTypeId);
         }
 
         private void ConfigureTicketContacts(ModelBuilder builder)

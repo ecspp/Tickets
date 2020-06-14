@@ -23,7 +23,7 @@ namespace Tickets.WebAPI.Services
             this._userManager = userManager;
 
         }
-        public async Task<bool> CreateContactAsync(Contact contact)
+        public async Task<bool> CreateAsync(Contact contact)
         {
             contact.CompanyId = _httpContextAcessor.GetCompanyId();
             contact.CreatedAt = DateTime.UtcNow;
