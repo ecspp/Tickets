@@ -21,6 +21,7 @@ namespace Tickets.WebAPI.Installers
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IFollowupService, FollowupService>();
+            services.AddScoped<IContactTypeService, ContactTypeService>();
             
             var jwtSettings = new JwtSettings();
             configuration.Bind(nameof(JwtSettings), jwtSettings);

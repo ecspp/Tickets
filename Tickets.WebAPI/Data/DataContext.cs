@@ -17,6 +17,7 @@ namespace Tickets.WebAPI.Data
         public DbSet<Followup> Followups { get; set; }
         public DbSet<TicketContact> TicketContacts { get; set; }
         public DbSet<ContactType> ContactTypes { get; set; }
+        public DbSet<ContactTypeContact> ContactTypeContacts { get; set; }
         
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -31,7 +32,7 @@ namespace Tickets.WebAPI.Data
             ConfigureFollowupModel(builder);
             ConfigureUserModel(builder);
             ConfigureTicketContacts(builder);
-
+            ConfigureContactTypeContacts(builder);
         }
 
         private void ConfigureContactTypeContacts(ModelBuilder builder)

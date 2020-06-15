@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tickets.Domain;
 using Tickets.WebAPI.Contracts.v1;
 using Tickets.WebAPI.Contracts.v1.DTOs;
+using Tickets.WebAPI.Contracts.v1.Requests.Creation;
 using Tickets.WebAPI.Services;
 
 namespace Tickets.WebAPI.Controllers.v1
@@ -27,16 +28,15 @@ namespace Tickets.WebAPI.Controllers.v1
         [HttpPost(ApiRoutes.Contact.Create)]
         [ProducesResponseType(typeof(ContactDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Create([FromBody] ContactDTO createRequest)
+        public async Task<ActionResult> Create([FromBody] AddContactDTO createRequest)
         {
-            var newContact = _mapper.Map<Contact>(createRequest);
-            var created = await _contactService.CreateAsync(newContact);
-            if (!created)
+            Contact newContact = await _contactService.CreateAsync(createRequest);
+            if (newContact == null)
             {
                 ModelState.AddModelError("Contact", "It was not possible to create the contact");
                 return ValidationProblem();
             }
-
+            
             var contactDto = _mapper.Map<ContactDTO>(newContact);
             return Ok(contactDto);
         }
@@ -53,17 +53,14 @@ namespace Tickets.WebAPI.Controllers.v1
                 return ValidationProblem();
             }
 
-            contact.Name = updateRequest.Name;
-            contact.Email = updateRequest.Email;
-
-            var updated = await _contactService.UpdateAsync(contact);
+            var updated = await _contactService.UpdateAsync(updateRequest, contact);
             if (!updated)
             {
                 ModelState.AddModelError("Contact", "An error ocurred while updating the contact");
                 return ValidationProblem();
             }
 
-            var contactDto = _mapper.Map<ContactDTO>(updated);
+            var contactDto = _mapper.Map<ContactDTO>(await _contactService.GetJoinedById(contactId));
 
             return Ok(contactDto);
         }

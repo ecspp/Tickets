@@ -10,7 +10,7 @@ using Tickets.WebAPI.Data;
 namespace Tickets.WebAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200612225924_Initial")]
+    [Migration("20200614124523_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,7 +150,7 @@ namespace Tickets.WebAPI.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -174,6 +174,41 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("Tickets.Domain.ContactType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ContactTypes");
+                });
+
+            modelBuilder.Entity("Tickets.Domain.ContactTypeContact", b =>
+                {
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContactTypeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ContactId", "ContactTypeId");
+
+                    b.HasIndex("ContactTypeId");
+
+                    b.ToTable("ContactTypeContact");
                 });
 
             modelBuilder.Entity("Tickets.Domain.Followup", b =>
@@ -472,7 +507,33 @@ namespace Tickets.WebAPI.Data.Migrations
                 {
                     b.HasOne("Tickets.Domain.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Tickets.Domain.ContactType", b =>
+                {
+                    b.HasOne("Tickets.Domain.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Tickets.Domain.ContactTypeContact", b =>
+                {
+                    b.HasOne("Tickets.Domain.Contact", "Contact")
+                        .WithMany("ContactTypeContacts")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tickets.Domain.ContactType", "ContactType")
+                        .WithMany("ContactTypeContacts")
+                        .HasForeignKey("ContactTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Tickets.Domain.Followup", b =>

@@ -184,9 +184,6 @@ namespace Tickets.WebAPI.Data.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ContactId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -194,9 +191,22 @@ namespace Tickets.WebAPI.Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("ContactId");
-
                     b.ToTable("ContactTypes");
+                });
+
+            modelBuilder.Entity("Tickets.Domain.ContactTypeContact", b =>
+                {
+                    b.Property<int>("ContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContactTypeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ContactId", "ContactTypeId");
+
+                    b.HasIndex("ContactTypeId");
+
+                    b.ToTable("ContactTypeContacts");
                 });
 
             modelBuilder.Entity("Tickets.Domain.Followup", b =>
@@ -507,10 +517,19 @@ namespace Tickets.WebAPI.Data.Migrations
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
+            modelBuilder.Entity("Tickets.Domain.ContactTypeContact", b =>
+                {
                     b.HasOne("Tickets.Domain.Contact", "Contact")
-                        .WithMany("ContactTypes")
+                        .WithMany("ContactTypeContacts")
                         .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tickets.Domain.ContactType", "ContactType")
+                        .WithMany("ContactTypeContacts")
+                        .HasForeignKey("ContactTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
