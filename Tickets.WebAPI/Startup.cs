@@ -32,8 +32,6 @@ namespace Tickets.WebAPI
             services.AddAutoMapper(typeof(Startup));
 
             services.InstallSwagger();
-
-            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +41,8 @@ namespace Tickets.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             // app.UseHttpsRedirection();
 
@@ -63,9 +63,8 @@ namespace Tickets.WebAPI
                 RequestPath = new PathString("/Resources")
             });
 
-            app.UseRouting();
             // app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyOrigin());
-            app.UseCors("default");
+            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();

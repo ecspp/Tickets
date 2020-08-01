@@ -10,6 +10,7 @@ namespace Tickets.WebAPI.Installers
     {
         public static void InstallMvc(this IServiceCollection services)
         {
+            services.AddCors();
             services.AddMvc(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -23,6 +24,7 @@ namespace Tickets.WebAPI.Installers
             .AddNewtonsoftJson(options => {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
         }
     }
 }

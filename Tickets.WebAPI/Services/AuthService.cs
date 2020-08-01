@@ -55,7 +55,7 @@ namespace Tickets.WebAPI.Services
             }
 
             var newCompany = new Company{
-                Name = registrationRequest.Company.Name,
+                CorporateName = registrationRequest.Company.CorporateName,
                 Email = registrationRequest.Company.Email
             };
 
@@ -81,9 +81,9 @@ namespace Tickets.WebAPI.Services
             return await AuthenticateUserAsync(newUser);
         }
 
-        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        public async Task<AuthenticationResult> LoginAsync(string userName, string password)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user == null)
             {
@@ -141,7 +141,8 @@ namespace Tickets.WebAPI.Services
             {
                 Success = true,
                 Token = tokenHandler.WriteToken(token),
-                RefreshToken = refreshToken.Token.ToString()
+                RefreshToken = refreshToken.Token.ToString(),
+                Username = user.UserName
             };
         }
 

@@ -14,10 +14,15 @@ namespace Tickets.WebAPI.Contracts.v1.Requests
     public class CompanyRegistrationDTO
     {
         [Required]
-        public string Name { get; set; }
+        public string CorporateName { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        // TODO: validate this
+        [Required]
+        public string CpfCnpj { get; set; }
     }
 
     public class CompanyUserRegistrationDTO 
